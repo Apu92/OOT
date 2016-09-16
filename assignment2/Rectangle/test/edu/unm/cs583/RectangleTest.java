@@ -48,6 +48,29 @@ public class RectangleTest {
 	}
 	
 	@Test
+	public void testNegativeArea() {
+		try {
+			Rectangle r = new Rectangle(1, 1, -3, 4);
+			int area = r.area();
+			System.out.println(r + " area: " + area);
+			
+			fail();
+		} catch (IllegalArgumentException e) {
+			
+		}
+		
+		try {
+			Rectangle r = new Rectangle(1, 1, 3, -4);
+			int area = r.area();
+			System.out.println(r + " area: " + area);
+			
+			fail();
+		} catch (IllegalArgumentException e) {
+			
+		}
+	}
+	
+	@Test
 	public void testOverflowArea() {
 		Rectangle r = new Rectangle(1, 1, Integer.MAX_VALUE, 2);
 
@@ -143,8 +166,8 @@ public class RectangleTest {
 		// Test biggest negative rectangle
 		Rectangle x4 = new Rectangle(Integer.MIN_VALUE, -1, 1, 1);
 		Rectangle y4 = new Rectangle(-1, Integer.MIN_VALUE, 1, 1);
-		assertEquals(new Rectangle(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE),
-				x4.union(y4));
+		assertEquals(new Rectangle(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE, 
+				Integer.MIN_VALUE), x4.union(y4));
 		
 		// Test not intersecting rectangles
 		Rectangle x2 = new Rectangle(1, 1, 1, 1);
