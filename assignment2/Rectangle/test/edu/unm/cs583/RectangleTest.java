@@ -11,7 +11,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import edu.unm.cs583.Rectangle;
+//import edu.unm.cs583.Rectangle;
+import edu.unm.cs583.fixed.Rectangle;
 
 public class RectangleTest {
 
@@ -72,9 +73,8 @@ public class RectangleTest {
 	
 	@Test
 	public void testOverflowArea() {
-		Rectangle r = new Rectangle(1, 1, Integer.MAX_VALUE, 2);
-
 		try {
+			Rectangle r = new Rectangle(0, 0, Integer.MAX_VALUE, 2);
 		    int area = r.area();
 		    System.out.println(r + " area: " + area);
 		    
@@ -97,9 +97,8 @@ public class RectangleTest {
 	
 	@Test
 	public void testMulOverflowDiagonal() {
-		Rectangle r = new Rectangle(1, 1, Integer.MAX_VALUE, 2);
-		
 		try {
+			Rectangle r = new Rectangle(0, 0, Integer.MAX_VALUE, 2);
 			double diagonal = r.diagonal();
 			System.out.println(r + " diagonal: " + diagonal);
 			
@@ -111,9 +110,8 @@ public class RectangleTest {
 	
 	@Test
 	public void testAddOverflowDiagonal() {
-		Rectangle r = new Rectangle(1, 1, 46340, 46340);
-		
 		try {
+			Rectangle r = new Rectangle(1, 1, 46340, 46340);
 			double diagonal = r.diagonal();
 			System.out.println(r + " diagonal: " + diagonal);
 			
@@ -163,12 +161,6 @@ public class RectangleTest {
 		Rectangle y1 = new Rectangle(100, 100, Integer.MAX_VALUE - 100, Integer.MAX_VALUE - 100);
 		assertEquals(new Rectangle(0,0,Integer.MAX_VALUE, Integer.MAX_VALUE), x1.union(y1));
 		
-		// Test biggest negative rectangle
-		Rectangle x4 = new Rectangle(Integer.MIN_VALUE, -1, 1, 1);
-		Rectangle y4 = new Rectangle(-1, Integer.MIN_VALUE, 1, 1);
-		assertEquals(new Rectangle(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE, 
-				Integer.MIN_VALUE), x4.union(y4));
-		
 		// Test not intersecting rectangles
 		Rectangle x2 = new Rectangle(1, 1, 1, 1);
 		Rectangle y2 = new Rectangle(4, 4, 1, 1);
@@ -179,11 +171,52 @@ public class RectangleTest {
 		Rectangle y3 = new Rectangle(2, 1, 1, 1);
 		assertEquals(new Rectangle(-2, -2, 5, 4), x3.union(y3));
 		
+		Rectangle x4 = new Rectangle(-2, -4, 1, 1);
+		Rectangle y4 = new Rectangle(-4, -2, 1, 1);
+		assertEquals(new Rectangle(-4, -4, 3, 3), x4.union(y4));
+		
 		// Test the same rectangle
 		assertEquals(x1, x1.union(x1));
 		assertEquals(x2, x2.union(x2));
 		assertEquals(x3, x3.union(x3));
 		
+	}
+	
+	@Test
+	public void testBiggestNegativeRecUnion() {
+		try {
+			Rectangle x4 = new Rectangle(Integer.MIN_VALUE, -1, 1, 1);
+			Rectangle y4 = new Rectangle(-1, Integer.MIN_VALUE, 1, 1);
+			
+			x4.union(y4);
+			fail();
+		} catch (ArithmeticException e) {
+			
+		}
+	}
+	
+	@Test
+	public void testInvalidObjectsUnion1() {
+		try {
+			Rectangle r = new Rectangle(1, 1, 1, 1);
+			Rectangle s = new Rectangle(-1, -1, -1, -1);
+			
+			assertEquals(new Rectangle(-2, -2, 3, 3), r.union(s));
+		} catch (IllegalArgumentException e) {
+			
+		}
+	}
+	
+	@Test
+	public void testInvalidObjectsUnion2() {
+		try {
+			Rectangle r = new Rectangle(Integer.MAX_VALUE - 100, Integer.MAX_VALUE - 100, 200, 200);
+			Rectangle s = new Rectangle(0, 0, 1, 1);
+			
+			assertEquals(new Rectangle(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE), r.union(s));
+		} catch (IllegalArgumentException e) {
+			
+		}
 	}
 
 /* The following test methods were not written in class */	
@@ -303,21 +336,27 @@ public class RectangleTest {
 	
 	@Test
 	public void testAreaOverflow() {
-		Rectangle rec = new Rectangle(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
-		int area = rec.area();
-		
-		if (area < Integer.MAX_VALUE) {
+		try {
+			Rectangle rec = new Rectangle(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
+			int area = rec.area();
+			System.out.println(rec + " area: " + area);
+			
 			fail();
+		} catch (ArithmeticException e) {
+			
 		}
 	}
 	
 	@Test
 	public void testAreaUnderflow() {
-		Rectangle rec = new Rectangle(0, 0, 2, Integer.MIN_VALUE);
-		int area = rec.area();
-		
-		if (area > 0) {
+		try {
+			Rectangle rec = new Rectangle(0, 0, 2, Integer.MIN_VALUE);
+			int area = rec.area();
+			System.out.println(rec + " area: " + area);
+			
 			fail();
+		} catch (IllegalArgumentException e) {
+			
 		}
 	}
 	
