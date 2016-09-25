@@ -15,8 +15,8 @@ public class Rectangle {
 	
 	// Constructor declaration
 	public Rectangle(int x, int y, int width, int height) {
-		if (width < 0 || height < 0) {
-			throw new IllegalArgumentException("No negative values allowed for width and height!");
+		if (width <= 0 || height <= 0) {
+			throw new IllegalArgumentException("No negative or zero values allowed for width and height!");
 		}
 		
 		if (Integer.MAX_VALUE - width < x || Integer.MAX_VALUE - height < y) {
@@ -37,11 +37,15 @@ public class Rectangle {
 	
 	// Accessors for computed values
 	public int area() {
-		return width * height;
+		if (width == Integer.MAX_VALUE || height == Integer.MAX_VALUE ) {
+			throw new ArithmeticException();
+		}
+		return Math.multiplyExact(width, height);
 	}
 	
 	public double diagonal() {
-		return Math.sqrt(width*width + height*height );
+		
+		return Math.sqrt(Math.addExact(Math.multiplyExact(width, width), Math.multiplyExact(height,height)));
 	}
 	
 	// Overriden Object class methods
@@ -83,56 +87,14 @@ public class Rectangle {
 /* The following methods were not written in class */	
 	
 	public boolean intersects( Rectangle r) {
-		/**
-		 * Incorrect solution based on in class tests
-		 * 
-		 * This solution will work for the test cases we had
-		 * *in class*, but asymmetrically.  Some test cases 
-		 * will pass as a.intersects(b) but not as 
-		 * b.intersects(a)
-		 * 
-		 * NOTE: The tests given for this method will fail
-		 * with this implementation.
-		 */
-				// UL corner of r is in 'this'
-		return contains(r.x, r.y) 
-				// UR corner of r is in 'this'
-			|| contains(r.x, r.y + r.height)
-				// LL corner of r is in 'this'
-			|| contains(r.x + r.width, r.y)
-				// UL corner of r is in 'this'
-			|| contains(r.x + r.width, r.y + r.height)
-				// At least one extreme x value of r is between
-				//  the exteme x values of 'this'
-			|| ((x <= r.x && r.x <= x + width 
-					|| x <= r.x + r.width && r.x + r.width <= x + width)
-					// And at least one extreme y value of 'this' is
-					//  is between the exteme values of r
-				&&
-				(r.y <= y && y <= r.y + r.height
-					|| r.y <= y + height && y + height <= r.y + r.height));
-		
-		/**
-		 * A correct solution
-		 * 
-		 * Thinking less about testing to see if the 
-		 * coordinate of one rectangle is between the
-		 * coordinates of another rectangle, focus on
-		 * the opposite problem: when are the rectangles
-		 * NOT intersecting
-		 * 
-		 * To test this, make sure you comment out the
-		 * full return statement above before uncommenting
-		 * these statements.
-		 */
-				// 'this' starts further right than r ends
-//		return !(r.x + r.width <= x 
+
+		return !(r.x + r.width <= x 
 				// r starts further right than 'this' ends 
-//			|| x + width <= r.x
+			|| x + width <= r.x
 				// 'this' starts lower than r ends
-//			|| r.y + r.height <= y 
+			|| r.y + r.height <= y 
 				// r starts lower than r ends
-//			|| y + height <= r.y);		
+			|| y + height <= r.y);		
 		
 	}
 	
